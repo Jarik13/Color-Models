@@ -1,6 +1,10 @@
+import managers.ColorModelManager;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Main {
     private static JLabel imageLabel;
@@ -25,14 +29,28 @@ public class Main {
         JButton uploadButton = new JButton("Upload file");
         JButton convertHSVButton = new JButton("Convert to HSV");
 
+        final BufferedImage[] originalImage = new BufferedImage[1];
+
         uploadButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             int returnValue = fileChooser.showOpenDialog(null);
 
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
-                System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-                displayImage(selectedFile);
+                try {
+                    originalImage[0] = javax.imageio.ImageIO.read(selectedFile);
+                    displayImage(originalImage[0]);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        convertHSVButton.addActionListener(e -> {
+            if (originalImage[0] != null) {
+                BufferedImage hsvImage = ColorModelManager.convertToHSV(originalImage[0]);
+                ImageIcon hsvIcon = new ImageIcon(hsvImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH));
+                imageLabel.setIcon(hsvIcon);
             }
         });
 
@@ -48,9 +66,8 @@ public class Main {
         frame.add(imagePanel, BorderLayout.CENTER);
     }
 
-    private static void displayImage(File file) {
-        ImageIcon imageIcon = new ImageIcon(file.getAbsolutePath());
-        Image image = imageIcon.getImage().getScaledInstance(800, 800, Image.SCALE_SMOOTH);
-        imageLabel.setIcon(new ImageIcon(image));
+    private static void displayImage(BufferedImage image) {
+        ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(800, 800, Image.SCALE_SMOOTH));
+        imageLabel.setIcon(imageIcon);
     }
 }
