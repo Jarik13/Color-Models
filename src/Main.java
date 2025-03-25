@@ -17,5 +17,8 @@ public class Main {
     }
 
     private static void initializeInputPanel(JFrame frame) {
+        JPanel inputPanel = new JPanel();
+
+        frame.add(inputPanel, BorderLayout.NORTH);
     }
 }
