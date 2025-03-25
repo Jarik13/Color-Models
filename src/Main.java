@@ -23,6 +23,7 @@ public class Main {
     private static void initializeInputPanel(JFrame frame) {
         JPanel inputPanel = new JPanel();
         JButton uploadButton = new JButton("Upload file");
+        JButton convertHSVButton = new JButton("Convert to HSV");
 
         uploadButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -36,6 +37,7 @@ public class Main {
         });
 
         inputPanel.add(uploadButton);
+        inputPanel.add(convertHSVButton);
         frame.add(inputPanel, BorderLayout.NORTH);
     }
 
