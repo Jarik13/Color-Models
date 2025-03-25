@@ -13,5 +13,9 @@ public class Main {
     }
 
     private static void initializeUI(JFrame frame) {
+        initializeInputPanel(frame);
+    }
+
+    private static void initializeInputPanel(JFrame frame) {
     }
 }
