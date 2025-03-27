@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class Main {
     private static JLabel imageLabel;
+    private static BufferedImage originalImage;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Color models!");
@@ -29,8 +30,6 @@ public class Main {
         JButton uploadButton = new JButton("Upload file");
         JButton convertHSVButton = new JButton("Convert to HSV");
 
-        final BufferedImage[] originalImage = new BufferedImage[1];
-
         uploadButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             int returnValue = fileChooser.showOpenDialog(null);
@@ -38,8 +37,8 @@ public class Main {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 try {
-                    originalImage[0] = javax.imageio.ImageIO.read(selectedFile);
-                    displayImage(originalImage[0]);
+                    originalImage = javax.imageio.ImageIO.read(selectedFile);
+                    displayImage(originalImage);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -47,8 +46,8 @@ public class Main {
         });
 
         convertHSVButton.addActionListener(e -> {
-            if (originalImage[0] != null) {
-                BufferedImage hsvImage = ColorModelManager.convertToHSV(originalImage[0]);
+            if (originalImage != null) {
+                BufferedImage hsvImage = ColorModelManager.convertToHSV(originalImage);
                 ImageIcon hsvIcon = new ImageIcon(hsvImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH));
                 imageLabel.setIcon(hsvIcon);
             }
