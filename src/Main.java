@@ -14,6 +14,7 @@ public class Main {
     private static BufferedImage displayedImage;
     private static Rectangle selectionRect = new Rectangle();
     private static Point2D.Double startPoint = null;
+    private static float value = 1.0f;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Color models!");
@@ -35,6 +36,8 @@ public class Main {
         JButton uploadButton = new JButton("Upload file");
         JButton convertHSVButton = new JButton("Convert to HSV");
         JButton convertRGBButton = new JButton("Convert to RGB");
+
+        JSlider valueSlider = new JSlider(0, 100, 100);
 
         uploadButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -66,9 +69,23 @@ public class Main {
             }
         });
 
+        valueSlider.setMajorTickSpacing(10);
+        valueSlider.setMinorTickSpacing(1);
+        valueSlider.setPaintTicks(true);
+        valueSlider.setPaintLabels(true);
+
+        valueSlider.addChangeListener(e -> {
+            value = valueSlider.getValue() / 100.0f;
+            if (originalImage != null) {
+                displayedImage = ColorModelManager.convertToHSVWithValue(originalImage, value);
+                repaintImage();
+            }
+        });
+
         inputPanel.add(uploadButton);
         inputPanel.add(convertHSVButton);
         inputPanel.add(convertRGBButton);
+        inputPanel.add(valueSlider);
         frame.add(inputPanel, BorderLayout.NORTH);
     }
 
