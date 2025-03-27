@@ -55,6 +55,14 @@ public class Main {
             }
         });
 
+        convertRGBButton.addActionListener(e -> {
+            if (originalImage != null) {
+                BufferedImage rgbImage = ColorModelManager.convertToRGB(originalImage);
+                ImageIcon rgbIcon = new ImageIcon(rgbImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH));
+                imageLabel.setIcon(rgbIcon);
+            }
+        });
+
         inputPanel.add(uploadButton);
         inputPanel.add(convertHSVButton);
         inputPanel.add(convertRGBButton);

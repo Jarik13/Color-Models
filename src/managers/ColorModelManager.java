@@ -55,15 +55,7 @@ public class ColorModelManager {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int hsvPixel = hsvImage.getRGB(x, y);
-                Color color = new Color(hsvPixel);
-
-                float h = (color.getRed() / 255.0f) * 360;
-                float s = color.getGreen() / 255.0f;
-                float v = color.getBlue() / 255.0f;
-
-                int newRGB = hsvToRGB(h, s, v);
-                rgbImage.setRGB(x, y, newRGB);
+                rgbImage.setRGB(x, y, hsvImage.getRGB(x, y));
             }
         }
         return rgbImage;
