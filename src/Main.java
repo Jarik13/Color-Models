@@ -52,6 +52,13 @@ public class Main {
                 BufferedImage hsvImage = ColorModelManager.convertToHSV(originalImage);
                 ImageIcon hsvIcon = new ImageIcon(hsvImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH));
                 imageLabel.setIcon(hsvIcon);
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Converted to HSV successfully!",
+                        "Conversion Successful",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             }
         });
 
@@ -60,6 +67,13 @@ public class Main {
                 BufferedImage rgbImage = ColorModelManager.convertToRGB(originalImage);
                 ImageIcon rgbIcon = new ImageIcon(rgbImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH));
                 imageLabel.setIcon(rgbIcon);
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Converted to RGB successfully!",
+                        "Conversion Successful",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             }
         });
 
