@@ -78,7 +78,11 @@ public class Main {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 if (displayedImage != null) {
-                    g.drawImage(displayedImage, 0, 0, this);
+                    int panelWidth = getWidth();
+                    int panelHeight = getHeight();
+
+                    Image scaledImage = displayedImage.getScaledInstance(panelWidth, panelHeight, Image.SCALE_SMOOTH);
+                    g.drawImage(scaledImage, 0, 0, this);
 
                     if (selectionRect.width > 0 && selectionRect.height > 0) {
                         g.setColor(new Color(0, 0, 255, 50));
