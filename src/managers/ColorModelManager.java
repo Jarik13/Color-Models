@@ -1,5 +1,6 @@
 package managers;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -45,6 +46,9 @@ public class ColorModelManager {
                 hsvImage.setRGB(x, y, newRGB);
             }
         }
+
+        checkColorChange(image, hsvImage, "HSV");
+
         return hsvImage;
     }
 
@@ -58,6 +62,9 @@ public class ColorModelManager {
                 rgbImage.setRGB(x, y, hsvImage.getRGB(x, y));
             }
         }
+
+        checkColorChange(hsvImage, rgbImage, "RGB");
+
         return rgbImage;
     }
 
@@ -86,5 +93,37 @@ public class ColorModelManager {
         int B = (int) ((b + m) * 255);
 
         return new Color(R, G, B).getRGB();
+    }
+
+    private static void checkColorChange(BufferedImage originalImage, BufferedImage convertedImage, String modelType) {
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
+        boolean isSame = true;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int originalPixel = originalImage.getRGB(x, y);
+                int convertedPixel = convertedImage.getRGB(x, y);
+
+                if (originalPixel != convertedPixel) {
+                    isSame = false;
+                }
+            }
+        }
+
+        if (isSame) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "No color change during conversion to " + modelType + ".",
+                    "No Change",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } else {
+            JOptionPane.showMessageDialog(
+                    null, "Converted to " + modelType + " successfully.",
+                    "Conversion Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
     }
 }
