@@ -38,7 +38,8 @@ public class Main {
                 File selectedFile = fileChooser.getSelectedFile();
                 try {
                     originalImage = javax.imageio.ImageIO.read(selectedFile);
-                    displayImage(originalImage);
+                    BufferedImage hsvImage = ColorModelManager.convertToHSV(originalImage);
+                    displayImage(hsvImage);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
