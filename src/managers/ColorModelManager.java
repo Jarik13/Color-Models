@@ -48,6 +48,27 @@ public class ColorModelManager {
         return hsvImage;
     }
 
+    public static BufferedImage convertToRGB(BufferedImage hsvImage) {
+        int width = hsvImage.getWidth();
+        int height = hsvImage.getHeight();
+        BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int hsvPixel = hsvImage.getRGB(x, y);
+                Color color = new Color(hsvPixel);
+
+                float h = (color.getRed() / 255.0f) * 360;
+                float s = color.getGreen() / 255.0f;
+                float v = color.getBlue() / 255.0f;
+
+                int newRGB = hsvToRGB(h, s, v);
+                rgbImage.setRGB(x, y, newRGB);
+            }
+        }
+        return rgbImage;
+    }
+
     private static int hsvToRGB(float h, float s, float v) {
         float c = v * s;
         float x = c * (1 - Math.abs((h / 60) % 2 - 1));
