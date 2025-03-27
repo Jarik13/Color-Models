@@ -41,8 +41,6 @@ public class ColorModelManager {
                 float s = (cMax == 0) ? 0 : (delta / cMax);
                 float v = cMax;
 
-                v *= 0.7f;
-
                 int newRGB = hsvToRGB(h, s, v);
                 hsvImage.setRGB(x, y, newRGB);
             }

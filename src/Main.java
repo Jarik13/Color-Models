@@ -29,6 +29,7 @@ public class Main {
         JPanel inputPanel = new JPanel();
         JButton uploadButton = new JButton("Upload file");
         JButton convertHSVButton = new JButton("Convert to HSV");
+        JButton convertRGBButton = new JButton("Convert to RGB");
 
         uploadButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -56,6 +57,7 @@ public class Main {
 
         inputPanel.add(uploadButton);
         inputPanel.add(convertHSVButton);
+        inputPanel.add(convertRGBButton);
         frame.add(inputPanel, BorderLayout.NORTH);
     }
 
