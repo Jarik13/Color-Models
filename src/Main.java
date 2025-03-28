@@ -17,6 +17,9 @@ public class Main {
     private static float value = 1.0f;
     private static boolean isSelectionComplete = false;
 
+    private static JLabel rgbLabel = new JLabel("RGB: ");
+    private static JLabel hsvLabel = new JLabel("HSV: ");
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Color models!");
         frame.setLayout(new BorderLayout());
@@ -83,10 +86,13 @@ public class Main {
             }
         });
 
+        inputPanel.setLayout(new FlowLayout());
         inputPanel.add(uploadButton);
         inputPanel.add(convertHSVButton);
         inputPanel.add(convertRGBButton);
         inputPanel.add(valueSlider);
+        inputPanel.add(rgbLabel);
+        inputPanel.add(hsvLabel);
         frame.add(inputPanel, BorderLayout.NORTH);
     }
 
@@ -171,6 +177,36 @@ public class Main {
 
                 selectionRect.setBounds(x, y, width, height);
                 imagePanel.repaint();
+            }
+        });
+
+        imagePanel.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if (displayedImage != null) {
+                    int panelWidth = imagePanel.getWidth();
+                    int panelHeight = imagePanel.getHeight();
+                    int imageWidth = displayedImage.getWidth();
+                    int imageHeight = displayedImage.getHeight();
+
+                    int offsetX = (panelWidth - imageWidth) / 2;
+                    int offsetY = (panelHeight - imageHeight) / 2;
+
+                    x = x - offsetX;
+                    y = y - offsetY;
+
+                    if (x >= 0 && x < imageWidth && y >= 0 && y < imageHeight) {
+                        Color color = new Color(displayedImage.getRGB(x, y));
+                        float[] hsv = new float[3];
+                        Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsv);
+
+                        rgbLabel.setText(String.format("RGB: (%d, %d, %d)", color.getRed(), color.getGreen(), color.getBlue()));
+                        hsvLabel.setText(String.format("HSV: (%.2f, %.2f, %.2f)", hsv[0] * 360, hsv[1], hsv[2]));
+                    }
+                }
             }
         });
 
