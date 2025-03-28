@@ -15,6 +15,7 @@ public class Main {
     private static Rectangle selectionRect = new Rectangle();
     private static Point2D.Double startPoint = null;
     private static float value = 1.0f;
+    private static boolean isSelectionComplete = false;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Color models!");
@@ -77,7 +78,7 @@ public class Main {
         valueSlider.addChangeListener(e -> {
             value = valueSlider.getValue() / 100.0f;
             if (originalImage != null) {
-                displayedImage = ColorModelManager.convertToHSVWithValue(originalImage, value);
+                displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, selectionRect);
                 repaintImage();
             }
         });
@@ -97,15 +98,30 @@ public class Main {
                 if (displayedImage != null) {
                     int panelWidth = getWidth();
                     int panelHeight = getHeight();
+                    int imageWidth = displayedImage.getWidth();
+                    int imageHeight = displayedImage.getHeight();
 
-                    Image scaledImage = displayedImage.getScaledInstance(panelWidth, panelHeight, Image.SCALE_SMOOTH);
-                    g.drawImage(scaledImage, 0, 0, this);
+                    int x = (panelWidth - imageWidth) / 2;
+                    int y = (panelHeight - imageHeight) / 2;
+
+                    g.drawImage(displayedImage, x, y, this);
 
                     if (selectionRect.width > 0 && selectionRect.height > 0) {
-                        g.setColor(new Color(0, 0, 255, 50));
-                        g.fillRect(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height);
-                        g.setColor(Color.BLUE);
-                        g.drawRect(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height);
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setColor(isSelectionComplete ? Color.BLUE : new Color(0, 0, 255, 50));
+
+                        int adjustedX = selectionRect.x + x;
+                        int adjustedY = selectionRect.y + y;
+
+                        if (isSelectionComplete) {
+                            float[] dashPattern = {10f, 10f};
+                            g2d.setStroke(new BasicStroke(2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dashPattern, 0f));
+                            g2d.drawRect(adjustedX, adjustedY, selectionRect.width, selectionRect.height);
+                        } else {
+                            g2d.fillRect(adjustedX, adjustedY, selectionRect.width, selectionRect.height);
+                            g2d.setColor(Color.BLUE);
+                            g2d.drawRect(adjustedX, adjustedY, selectionRect.width, selectionRect.height);
+                        }
                     }
                 }
             }
@@ -116,13 +132,23 @@ public class Main {
         imagePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                startPoint = new Point2D.Double(e.getX(), e.getY());
-                selectionRect.setBounds(e.getX(), e.getY(), 0, 0);
+                isSelectionComplete = false;
+
+                int panelWidth = imagePanel.getWidth();
+                int panelHeight = imagePanel.getHeight();
+                int imageWidth = displayedImage.getWidth();
+                int imageHeight = displayedImage.getHeight();
+
+                int offsetX = (panelWidth - imageWidth) / 2;
+                int offsetY = (panelHeight - imageHeight) / 2;
+
+                startPoint = new Point2D.Double(e.getX() - offsetX, e.getY() - offsetY);
+                selectionRect.setBounds((int) startPoint.getX(), (int) startPoint.getY(), 0, 0);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                selectionRect.setBounds(0, 0, 0, 0);
+                isSelectionComplete = true;
                 imagePanel.repaint();
             }
         });
@@ -130,10 +156,19 @@ public class Main {
         imagePanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                int x = (int) Math.min(startPoint.getX(), e.getX());
-                int y = (int) Math.min(startPoint.getY(), e.getY());
-                int width = Math.abs((int) (startPoint.getX() - e.getX()));
-                int height = Math.abs((int) (startPoint.getY() - e.getY()));
+                int panelWidth = imagePanel.getWidth();
+                int panelHeight = imagePanel.getHeight();
+                int imageWidth = displayedImage.getWidth();
+                int imageHeight = displayedImage.getHeight();
+
+                int offsetX = (panelWidth - imageWidth) / 2;
+                int offsetY = (panelHeight - imageHeight) / 2;
+
+                int x = (int) Math.min(startPoint.getX(), e.getX() - offsetX);
+                int y = (int) Math.min(startPoint.getY(), e.getY() - offsetY);
+                int width = Math.abs((int) (startPoint.getX() - (e.getX() - offsetX)));
+                int height = Math.abs((int) (startPoint.getY() - (e.getY() - offsetY)));
+
                 selectionRect.setBounds(x, y, width, height);
                 imagePanel.repaint();
             }
