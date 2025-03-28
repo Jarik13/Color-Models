@@ -16,6 +16,7 @@ public class Main {
     private static Point2D.Double startPoint = null;
     private static float value = 1.0f;
     private static boolean isSelectionComplete = false;
+    private static boolean isRGB = false;
 
     private static JLabel rgbLabel = new JLabel("RGB: ");
     private static JLabel hsvLabel = new JLabel("HSV: ");
@@ -52,7 +53,8 @@ public class Main {
                 File selectedFile = fileChooser.getSelectedFile();
                 try {
                     originalImage = javax.imageio.ImageIO.read(selectedFile);
-                    displayedImage = originalImage;
+                    displayedImage = ColorModelManager.convertToHSV(originalImage);
+                    isRGB = false;
                     repaintImage();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -63,6 +65,7 @@ public class Main {
         convertHSVButton.addActionListener(e -> {
             if (originalImage != null) {
                 displayedImage = ColorModelManager.convertToHSV(originalImage);
+                isRGB = false;
                 selectionRect.setBounds(0, 0, 0, 0);
                 repaintImage();
             }
@@ -71,6 +74,7 @@ public class Main {
         convertRGBButton.addActionListener(e -> {
             if (originalImage != null) {
                 displayedImage = ColorModelManager.convertToRGB(originalImage);
+                isRGB = true;
                 selectionRect.setBounds(0, 0, 0, 0);
                 repaintImage();
             }
@@ -82,14 +86,16 @@ public class Main {
         valueSlider.setPaintLabels(true);
 
         valueSlider.addChangeListener(e -> {
-            value = valueSlider.getValue() / 100.0f;
-            if (originalImage != null) {
-                if (isSelectionComplete) {
-                    displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, selectionRect);
-                } else {
-                    displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, new Rectangle(0, 0, originalImage.getWidth(), originalImage.getHeight()));
+            if (!isRGB) {
+                value = valueSlider.getValue() / 100.0f;
+                if (originalImage != null) {
+                    if (isSelectionComplete) {
+                        displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, selectionRect);
+                    } else {
+                        displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, new Rectangle(0, 0, originalImage.getWidth(), originalImage.getHeight()));
+                    }
+                    repaintImage();
                 }
-                repaintImage();
             }
         });
 
