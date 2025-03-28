@@ -82,7 +82,11 @@ public class Main {
         valueSlider.addChangeListener(e -> {
             value = valueSlider.getValue() / 100.0f;
             if (originalImage != null) {
-                displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, selectionRect);
+                if (isSelectionComplete) {
+                    displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, selectionRect);
+                } else {
+                    displayedImage = ColorModelManager.convertToHSVWithValueAndSelection(originalImage, value, new Rectangle(0, 0, originalImage.getWidth(), originalImage.getHeight()));
+                }
                 repaintImage();
             }
         });
