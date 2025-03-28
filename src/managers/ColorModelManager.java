@@ -70,40 +70,42 @@ public class ColorModelManager {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                if (x >= startX && x < endX && y >= startY && y < endY) {
-                    int rgb = image.getRGB(x, y);
-                    Color color = new Color(rgb);
+                int rgb = image.getRGB(x, y);
+                Color color = new Color(rgb);
 
-                    int r = color.getRed();
-                    int g = color.getGreen();
-                    int b = color.getBlue();
+                int r = color.getRed();
+                int g = color.getGreen();
+                int b = color.getBlue();
 
-                    float rNorm = r / 255.0f;
-                    float gNorm = g / 255.0f;
-                    float bNorm = b / 255.0f;
+                float rNorm = r / 255.0f;
+                float gNorm = g / 255.0f;
+                float bNorm = b / 255.0f;
 
-                    float cMax = Math.max(rNorm, Math.max(gNorm, bNorm));
-                    float cMin = Math.min(rNorm, Math.min(gNorm, bNorm));
-                    float delta = cMax - cMin;
+                float cMax = Math.max(rNorm, Math.max(gNorm, bNorm));
+                float cMin = Math.min(rNorm, Math.min(gNorm, bNorm));
+                float delta = cMax - cMin;
 
-                    float h = 0;
-                    if (delta != 0) {
-                        if (cMax == rNorm) {
-                            h = 60 * (((gNorm - bNorm) / delta) % 6);
-                        } else if (cMax == gNorm) {
-                            h = 60 * (((bNorm - rNorm) / delta) + 2);
-                        } else {
-                            h = 60 * (((rNorm - gNorm) / delta) + 4);
-                        }
+                float h = 0;
+                if (delta != 0) {
+                    if (cMax == rNorm) {
+                        h = 60 * (((gNorm - bNorm) / delta) % 6);
+                    } else if (cMax == gNorm) {
+                        h = 60 * (((bNorm - rNorm) / delta) + 2);
+                    } else {
+                        h = 60 * (((rNorm - gNorm) / delta) + 4);
                     }
-                    if (h < 0) h += 360;
-
-                    float s = (cMax == 0) ? 0 : (delta / cMax);
-                    int newRGB = hsvToRGB(h, s, value);
-                    hsvImage.setRGB(x, y, newRGB);
-                } else {
-                    hsvImage.setRGB(x, y, image.getRGB(x, y));
                 }
+                if (h < 0) h += 360;
+
+                float s = (cMax == 0) ? 0 : (delta / cMax);
+                float v = cMax;
+
+                if (h >= 160 && h <= 200 && x >= startX && x < endX && y >= startY && y < endY) {
+                    v = value;
+                }
+
+                int newRGB = hsvToRGB(h, s, v);
+                hsvImage.setRGB(x, y, newRGB);
             }
         }
 
