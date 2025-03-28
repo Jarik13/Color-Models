@@ -13,42 +13,13 @@ public class ColorModelManager {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int rgb = image.getRGB(x, y);
-                Color color = new Color(rgb);
-
-                int r = color.getRed();
-                int g = color.getGreen();
-                int b = color.getBlue();
-
-                float rNorm = r / 255.0f;
-                float gNorm = g / 255.0f;
-                float bNorm = b / 255.0f;
-
-                float cMax = Math.max(rNorm, Math.max(gNorm, bNorm));
-                float cMin = Math.min(rNorm, Math.min(gNorm, bNorm));
-                float delta = cMax - cMin;
-
-                float h = 0;
-                if (delta != 0) {
-                    if (cMax == rNorm) {
-                        h = 60 * (((gNorm - bNorm) / delta) % 6);
-                    } else if (cMax == gNorm) {
-                        h = 60 * (((bNorm - rNorm) / delta) + 2);
-                    } else {
-                        h = 60 * (((rNorm - gNorm) / delta) + 4);
-                    }
-                }
-                if (h < 0) h += 360;
-
-                float s = (cMax == 0) ? 0 : (delta / cMax);
-                float v = cMax;
-
-                int newRGB = hsvToRGB(h, s, v);
+                float[] hsv = rgbToHSV(rgb);
+                int newRGB = hsvToRGB(hsv[0], hsv[1], hsv[2]);
                 hsvImage.setRGB(x, y, newRGB);
             }
         }
 
         checkColorChange(image, hsvImage, "HSV");
-
         return hsvImage;
     }
 
@@ -71,40 +42,13 @@ public class ColorModelManager {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int rgb = image.getRGB(x, y);
-                Color color = new Color(rgb);
+                float[] hsv = rgbToHSV(rgb);
 
-                int r = color.getRed();
-                int g = color.getGreen();
-                int b = color.getBlue();
-
-                float rNorm = r / 255.0f;
-                float gNorm = g / 255.0f;
-                float bNorm = b / 255.0f;
-
-                float cMax = Math.max(rNorm, Math.max(gNorm, bNorm));
-                float cMin = Math.min(rNorm, Math.min(gNorm, bNorm));
-                float delta = cMax - cMin;
-
-                float h = 0;
-                if (delta != 0) {
-                    if (cMax == rNorm) {
-                        h = 60 * (((gNorm - bNorm) / delta) % 6);
-                    } else if (cMax == gNorm) {
-                        h = 60 * (((bNorm - rNorm) / delta) + 2);
-                    } else {
-                        h = 60 * (((rNorm - gNorm) / delta) + 4);
-                    }
-                }
-                if (h < 0) h += 360;
-
-                float s = (cMax == 0) ? 0 : (delta / cMax);
-                float v = cMax;
-
-                if (h >= 170 && h <= 190 && x >= startX && x < endX && y >= startY && y < endY) {
-                    v = value;
+                if (hsv[0] >= 170 && hsv[0] <= 190 && x >= startX && x < endX && y >= startY && y < endY) {
+                    hsv[2] = value;
                 }
 
-                int newRGB = hsvToRGB(h, s, v);
+                int newRGB = hsvToRGB(hsv[0], hsv[1], hsv[2]);
                 hsvImage.setRGB(x, y, newRGB);
             }
         }
@@ -126,6 +70,34 @@ public class ColorModelManager {
         checkColorChange(hsvImage, rgbImage, "RGB");
 
         return rgbImage;
+    }
+
+    private static float[] rgbToHSV(int rgb) {
+        Color color = new Color(rgb);
+        float r = color.getRed() / 255.0f;
+        float g = color.getGreen() / 255.0f;
+        float b = color.getBlue() / 255.0f;
+
+        float cMax = Math.max(r, Math.max(g, b));
+        float cMin = Math.min(r, Math.min(g, b));
+        float delta = cMax - cMin;
+
+        float h = 0;
+        if (delta != 0) {
+            if (cMax == r) {
+                h = 60 * (((g - b) / delta) % 6);
+            } else if (cMax == g) {
+                h = 60 * (((b - r) / delta) + 2);
+            } else {
+                h = 60 * (((r - g) / delta) + 4);
+            }
+        }
+        if (h < 0) h += 360;
+
+        float s = (cMax == 0) ? 0 : (delta / cMax);
+        float v = cMax;
+
+        return new float[]{h, s, v};
     }
 
     private static int hsvToRGB(float h, float s, float v) {
