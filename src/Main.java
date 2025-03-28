@@ -40,6 +40,7 @@ public class Main {
         JButton uploadButton = new JButton("Upload file");
         JButton convertHSVButton = new JButton("Convert to HSV");
         JButton convertRGBButton = new JButton("Convert to RGB");
+        JButton saveButton = new JButton("Save Image");
 
         JSlider valueSlider = new JSlider(0, 100, 100);
 
@@ -86,6 +87,21 @@ public class Main {
             }
         });
 
+        saveButton.addActionListener(e -> {
+            if (displayedImage != null) {
+                JFileChooser saveChooser = new JFileChooser();
+                int returnValue = saveChooser.showSaveDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File saveFile = saveChooser.getSelectedFile();
+                    try {
+                        javax.imageio.ImageIO.write(displayedImage, "PNG", saveFile); // Збереження у форматі PNG
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
         inputPanel.setLayout(new FlowLayout());
         inputPanel.add(uploadButton);
         inputPanel.add(convertHSVButton);
@@ -93,6 +109,7 @@ public class Main {
         inputPanel.add(valueSlider);
         inputPanel.add(rgbLabel);
         inputPanel.add(hsvLabel);
+        inputPanel.add(saveButton);
         frame.add(inputPanel, BorderLayout.NORTH);
     }
 
