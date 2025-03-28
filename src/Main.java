@@ -212,11 +212,11 @@ public class Main {
                     int offsetX = (panelWidth - imageWidth) / 2;
                     int offsetY = (panelHeight - imageHeight) / 2;
 
-                    x = x - offsetX;
-                    y = y - offsetY;
+                    int imageX = x - offsetX;
+                    int imageY = y - offsetY;
 
-                    if (x >= 0 && x < imageWidth && y >= 0 && y < imageHeight) {
-                        Color color = new Color(displayedImage.getRGB(x, y));
+                    if (imageX >= 0 && imageX < displayedImage.getWidth() && imageY >= 0 && imageY < displayedImage.getHeight()) {
+                        Color color = new Color(displayedImage.getRGB(imageX, imageY));
                         float[] hsv = new float[3];
                         Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsv);
 

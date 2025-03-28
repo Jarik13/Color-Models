@@ -44,7 +44,11 @@ public class ColorModelManager {
                 int rgb = image.getRGB(x, y);
                 float[] hsv = rgbToHSV(rgb);
 
-                if (hsv[0] >= 170 && hsv[0] <= 190 && x >= startX && x < endX && y >= startY && y < endY) {
+                // if (hsv[0] >= 170 && hsv[0] <= 190 && x >= startX && x < endX && y >= startY && y < endY) {
+                //     hsv[2] = value;
+                // }
+
+                if (Math.abs(hsv[0] - 180) < 0.5f && x >= startX && x < endX && y >= startY && y < endY) {
                     hsv[2] = value;
                 }
 
