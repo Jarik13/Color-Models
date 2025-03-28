@@ -100,7 +100,7 @@ public class ColorModelManager {
                 float s = (cMax == 0) ? 0 : (delta / cMax);
                 float v = cMax;
 
-                if (h >= 160 && h <= 200 && x >= startX && x < endX && y >= startY && y < endY) {
+                if (h >= 170 && h <= 190 && x >= startX && x < endX && y >= startY && y < endY) {
                     v = value;
                 }
 
