@@ -63,6 +63,7 @@ public class Main {
         convertHSVButton.addActionListener(e -> {
             if (originalImage != null) {
                 displayedImage = ColorModelManager.convertToHSV(originalImage);
+                selectionRect.setBounds(0, 0, 0, 0);
                 repaintImage();
             }
         });
@@ -70,6 +71,7 @@ public class Main {
         convertRGBButton.addActionListener(e -> {
             if (originalImage != null) {
                 displayedImage = ColorModelManager.convertToRGB(originalImage);
+                selectionRect.setBounds(0, 0, 0, 0);
                 repaintImage();
             }
         });
